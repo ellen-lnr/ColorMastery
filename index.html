@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Mastery</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>Color Mastery</h1>
+        <p>Faites correspondre la couleur de la forme à la couleur cible.</p>
+        <div class="target-color"></div>
+        <div class="shape" id="shape"></div>
+        <div class="controls">
+            <label for="hue">Teinte (H)</label>
+            <input type="range" id="hue" min="0" max="360" value="180">
+            <label for="saturation">Saturation (S)</label>
+            <input type="range" id="saturation" min="0" max="100" value="50">
+            <label for="lightness">Luminosité (L)</label>
+            <input type="range" id="lightness" min="0" max="100" value="50">
+        </div>
+        <button id="checkColor">Vérifier</button>
+        <p id="feedback"></p>
+    </div>
+    <script src="colorUtils.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
