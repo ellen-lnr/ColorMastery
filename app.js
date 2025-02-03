@@ -33,6 +33,14 @@ document.addEventListener("DOMContentLoaded", () => {
         targetColorDiv.style.backgroundColor = targetColor;
     }
 
+    function updateShapeColor() {
+        let h = hueInput.value;
+        let s = saturationInput.value;
+        let l = lightnessInput.value;
+        shape.style.backgroundColor = `hsl(${h}, ${s}%, ${l}%)`;
+        hexInput.value = hslToHex(h, s, l);
+    }
+
     function hslToHex(h, s, l) {
         s /= 100;
         l /= 100;
@@ -55,29 +63,46 @@ document.addEventListener("DOMContentLoaded", () => {
         return `#${r}${g}${b}`;
     }
 
-    function updateShapeColor() {
-        let h = hueInput.value;
-        let s = saturationInput.value;
-        let l = lightnessInput.value;
-        let hslColor = `hsl(${h}, ${s}%, ${l}%)`;
-        shape.style.backgroundColor = hslColor;
-        hexInput.value = hslToHex(h, s, l);
-    }
+    function checkColorMatch() {
+        let userH = parseInt(hueInput.value);
+        let userS = parseInt(saturationInput.value);
+        let userL = parseInt(lightnessInput.value);
+        
+        let hueDiff = Math.abs(userH - targetHue);
+        let satDiff = Math.abs(userS - targetSaturation);
+        let lightDiff = Math.abs(userL - targetLightness);
 
-    function updateFromHex() {
-        let hex = hexInput.value;
-        let ctx = document.createElement("canvas").getContext("2d");
-        ctx.fillStyle = hex;
-        let computed = ctx.fillStyle;
-        if (computed.startsWith("rgb")) {
-            shape.style.backgroundColor = computed;
+        let totalDiff = hueDiff + satDiff + lightDiff;
+        let score = totalDiff <= 10 ? 10 : totalDiff < 50 ? 5 : 0;
+
+        totalScore += score;
+        feedback.textContent = `Score du round : ${score}/10`;
+        scoreBoard.textContent = `Score total : ${totalScore}/${maxRounds * 10}`;
+
+        if (++round < maxRounds) {
+            generateTargetColor();
+        } else {
+            feedback.textContent += ` Partie terminée ! Score final : ${totalScore}/${maxRounds * 10}`;
+            checkButton.disabled = true;
+            restartButton.style.display = "block";
         }
     }
 
+    function restartGame() {
+        round = 0;
+        totalScore = 0;
+        scoreBoard.textContent = "";
+        feedback.textContent = "";
+        checkButton.disabled = false;
+        restartButton.style.display = "none";
+        generateTargetColor();
+    }
+
+    restartButton.addEventListener("click", restartGame);
     hueInput.addEventListener("input", updateShapeColor);
     saturationInput.addEventListener("input", updateShapeColor);
     lightnessInput.addEventListener("input", updateShapeColor);
-    hexInput.addEventListener("input", updateFromHex);
+    checkButton.addEventListener("click", checkColorMatch);
 
     generateTargetColor();
 });
